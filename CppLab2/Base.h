@@ -10,7 +10,7 @@
 #define MIN_N 10000;
 #define MAX_N 100000;
 #define STEP_N 10000;
-#define APROXIME 200; 
+#define APROXIME 1; 
 
 #define THR_START 0;
 #define THR_END 3 ;
@@ -47,7 +47,7 @@ public:
 	void saveResults(unsigned long * res, unsigned long* write, unsigned long* read);
 	void showResults(unsigned long* run, unsigned long* read, unsigned long* write);
 
-	bool isSame();
+	bool isTheSame();
 
 };
 

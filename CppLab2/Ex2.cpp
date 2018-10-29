@@ -10,7 +10,7 @@ Ex2::Ex2()
 
 unsigned long Ex2::doParralel(int cpuCount, int n) {
 	int z, i;
-	int iterCount = log2l(n);
+	int iterCount = log2l(n)+1;
 	auto start = chrono::high_resolution_clock::now();
 
 #pragma omp parallel for schedule(static, n/2) private(i, z) num_threads(cpuCount)
@@ -23,9 +23,6 @@ unsigned long Ex2::doParralel(int cpuCount, int n) {
 	}
 		cout << "s = " << mass[0] << endl;
 	
-
-
-
 	auto finish = chrono::high_resolution_clock::now();
 	unsigned long duration = chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
 
@@ -46,6 +43,8 @@ unsigned long Ex2::doSingle(int n)
 	auto finish = chrono::high_resolution_clock::now();
 	unsigned long duration = chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
 
+	singleSize = 1;
+	for (int i = 0; i < singleSize; i++) singleMass[i] = mass[i];
 	return duration;
 }
 

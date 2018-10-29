@@ -159,15 +159,15 @@ void Base::doAnalise() {
 
 		for (int n = minN; n <= maxN; n += step) {
 			mass = (float*)malloc(sizeof(float)*n);
-			if (i == minN) {
+			if (i == tStart) {
 				singleMass = (float*)malloc(sizeof(float)*n);
-				long currentRunTime = doSingle(n);
+				//long currentRunTime = doSingle(n);
 			}
 			long currentReadTime = readData(n, true);
 			long currentRunTime = wrapAlgo(i, n);
 			long currentWriteTime = writeData(n, true) / 1000;
 
-			if (!isSame()) {
+			if (!isTheSame()) {
 				cout << "Results was difrent!";
 				_getch();
 				exit(4);
@@ -272,7 +272,7 @@ void Base::saveResults(unsigned long* res, unsigned long* write, unsigned long* 
 	}
 }
 
-bool Base::isSame() {
+bool Base::isTheSame() {
 	for (int i = 0; i < singleSize; i++) {
 		if (mass[i] != singleMass[i]) return false;
 	}
