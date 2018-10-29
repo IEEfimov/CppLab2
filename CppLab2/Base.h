@@ -1,7 +1,7 @@
 #pragma once
 #include <conio.h>
 #include <windows.h>
- #include <omp.h>
+#include <omp.h>
 #include <chrono>
 #include <string>
 #include <iostream>
@@ -10,10 +10,10 @@
 #define MIN_N 10000;
 #define MAX_N 100000;
 #define STEP_N 10000;
-#define APROXIME 1000; 
+#define APROXIME 200; 
 
 #define THR_START 0;
-#define THR_END 9 ;
+#define THR_END 3 ;
 #define THR_STEP 1;
 
 
@@ -36,6 +36,8 @@ public:
 	virtual unsigned long doSingle(int n);
 
 	unsigned long wrapAlgo(int cpuCount, int n);
+
+	void printExName(int cpuCount, int n);
 
 	unsigned long readData(int n, byte toLog);
 	unsigned long createData(int n, byte toLog);

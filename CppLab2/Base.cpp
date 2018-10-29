@@ -110,24 +110,34 @@ unsigned long Base::doSingle(int n) {
 }
 
 unsigned long Base::wrapAlgo(int cpuCount, int n) {
-	string text = "Started parralel Matrix[";
-	text.append(to_string(n));
-	text.append("]");
-	text.append(ExName);
-	text.append("with ");
-	text.append(to_string(cpuCount + 1));
-	text.append(" threads... ");
-	printf_s("%s", text.c_str());
+	printExName(cpuCount, n);
+
+	int tStart = THR_START;
 
 	int iter = APROXIME;
 	unsigned long time = 0;
 	for (int z = 0; z < iter; z++) {
+		if (cpuCount == tStart) {
+			time += doSingle(n);
+			continue;
+		}
 		time += doParralel(cpuCount, n);
 	}
 	readData(n, false);
 	doParralel(cpuCount, n);
 	printf_s("Done in %d ns\n", time / iter);
 	return time / iter;
+}
+
+void Base::printExName(int cpuCount, int n) {
+	string text = "Started parralel Matrix[";
+	text.append(to_string(n));
+	text.append("] ");
+	text.append(ExName);
+	text.append("with ");
+	text.append(to_string(cpuCount + 1));
+	text.append(" threads... ");
+	printf_s("%s", text.c_str());
 }
 
 

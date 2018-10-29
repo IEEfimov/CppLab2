@@ -9,6 +9,7 @@ public:
 	Ex1();
 	~Ex1();
 
+	unsigned long writeData(int n, byte toLog);
 	unsigned long doParralel(int cpuCount, int n);
 	unsigned long doSingle(int n);
 
