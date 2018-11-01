@@ -9,8 +9,8 @@ Ex1::Ex1()
 
 }
 
-unsigned long Ex1::writeData(int n, byte toLog) {
-	return Base::writeData(3, toLog);
+unsigned long Ex1::writeData(int n, byte toLog, byte isParralel) {
+	return Base::writeData(3, toLog, isParralel);
 }
 
 unsigned long Ex1::doParralel(int cpuCount, int n) {
@@ -19,6 +19,11 @@ unsigned long Ex1::doParralel(int cpuCount, int n) {
 	int countMinus = 0;
 	int zeroCount = 0;
 	cpuCount += 1;
+
+	float* mass = (float*)malloc(sizeof(float)*n);
+	for (int i = 0; i < n; i++) {
+		mass[i] = workMass[i];
+	}
 
 	auto start = chrono::high_resolution_clock::now();
 
@@ -37,10 +42,13 @@ unsigned long Ex1::doParralel(int cpuCount, int n) {
 			countMinus++;
 		}
 	}
-	mass[0] = (float)countPlus;
-	mass[1] = (float)countMinus;
-	mass[2] = (float)zeroCount;
-	
+	free(mass);
+	free(resultP);
+	resultP = (float*) malloc(sizeof(float) * 3);
+	resultP[0] = (float)countPlus;
+	resultP[1] = (float)countMinus;
+	resultP[2] = (float)zeroCount;
+	resultSize = 3;
 
 	auto finish = chrono::high_resolution_clock::now();
 	unsigned long duration = chrono::duration_cast<chrono::nanoseconds>(finish - start).count();
@@ -55,6 +63,11 @@ unsigned long Ex1::doSingle(int n)
 	int countMinus = 0;
 	int zeroCount = 0;
 
+	float* mass = (float*)malloc(sizeof(float)*n);
+	for (int i = 0; i < n; i++) {
+		mass[i] = workMass[i];
+	}
+
 	auto start = chrono::high_resolution_clock::now();
 
 	for (i = 0; i < n; i++) {
@@ -66,10 +79,14 @@ unsigned long Ex1::doSingle(int n)
 			countMinus++;
 		}
 	}
-	mass[0] = (float)countPlus;
-	mass[1] = (float)countMinus;
-	mass[2] = (float)zeroCount;
 
+	free(mass);
+	free(resultS);
+	resultS = (float*)malloc(sizeof(float) * 3);
+	resultS[0] = (float)countPlus;
+	resultS[1] = (float)countMinus;
+	resultS[2] = (float)zeroCount;
+	resultSize = 3;
 
 	auto finish = chrono::high_resolution_clock::now();
 	unsigned long duration = chrono::duration_cast<chrono::nanoseconds>(finish - start).count();

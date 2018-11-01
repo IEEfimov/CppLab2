@@ -10,14 +10,6 @@ Base::Base()
 }
 unsigned long Base::readData(int n, byte toLog) {
 	FILE *f;
-	/*string fileName = FOLDER_NAME;
-	if (CreateDirectory(fileName.c_str() , NULL) ||
-	ERROR_ALREADY_EXISTS == GetLastError())
-	{
-
-	}
-	else return -1;*/
-
 
 	string fileName = "input_";
 	fileName.append(to_string(n));
@@ -26,7 +18,7 @@ unsigned long Base::readData(int n, byte toLog) {
 	auto start = chrono::high_resolution_clock::now();
 	int err = fopen_s(&f, fileName.c_str(), "rb");
 	if (err == 0) {
-		for (int i = 0; i < n; i++) fscanf_s(f, "%f", &mass[i]);
+		for (int i = 0; i < n; i++) fscanf_s(f, "%f", &workMass[i]);
 		fclose(f);
 	}
 	else if (err == 2) {
@@ -46,14 +38,6 @@ unsigned long Base::readData(int n, byte toLog) {
 }
 unsigned long Base::createData(int n, byte toLog) {
 	FILE *f;
-	/*string fileName = FOLDER_NAME;
-	if (CreateDirectory(fileName.c_str() , NULL) ||
-	ERROR_ALREADY_EXISTS == GetLastError())
-	{
-
-	}
-	else return -1;*/
-
 
 	string fileName = "input_";
 	fileName.append(to_string(n));
@@ -63,7 +47,7 @@ unsigned long Base::createData(int n, byte toLog) {
 	if (err == 0) {
 		for (int i = 0; i < n; i++) {
 			fprintf_s(f, "%d ", i % 10);
-			mass[i] = i % 10;
+			workMass[i] = i % 10;
 		}
 		fclose(f);
 	}
@@ -72,26 +56,21 @@ unsigned long Base::createData(int n, byte toLog) {
 	return duration;
 
 }
-unsigned long Base::writeData(int n, byte toLog) {
+unsigned long Base::writeData(int n, byte toLog, byte isParralel) {
 	FILE *f;
-	/*string fileName = FOLDER_NAME;
-	if (CreateDirectory(fileName.c_str() , NULL) ||
-	ERROR_ALREADY_EXISTS == GetLastError())
-	{
-
-	}
-	else return -1;*/
-
-
+	volatile byte aa = isParralel;
 	string fileName = "output_";
 	fileName.append(to_string(n));
 	fileName.append(".bin");
 	if (toLog) printf_s("Starting to write the file %s... ", fileName.c_str());
 	auto start = chrono::high_resolution_clock::now();
 	int err = fopen_s(&f, fileName.c_str(), "wb");
+	
 	if (err == 0) {
 		for (int i = 0; i < n; i++) {
-			fprintf_s(f, "%f ", mass[i]);
+			
+			float num = aa ? resultP[i] : resultS[i];
+			fprintf_s(f, "%f ", num);
 		}
 		fclose(f);
 	}
@@ -104,7 +83,6 @@ unsigned long Base::writeData(int n, byte toLog) {
 unsigned long Base::doParralel(int cpuCount, int n) {
 	return 0;
 }
-
 unsigned long Base::doSingle(int n) {
 	return 0;
 }
@@ -123,24 +101,11 @@ unsigned long Base::wrapAlgo(int cpuCount, int n) {
 		}
 		time += doParralel(cpuCount, n);
 	}
-	readData(n, false);
-	doParralel(cpuCount, n);
+	/*readData(n, false);
+	doParralel(cpuCount, n);*/
 	printf_s("Done in %d ns\n", time / iter);
 	return time / iter;
 }
-
-void Base::printExName(int cpuCount, int n) {
-	string text = "Started parralel Matrix[";
-	text.append(to_string(n));
-	text.append("] ");
-	text.append(ExName);
-	text.append("with ");
-	text.append(to_string(cpuCount + 1));
-	text.append(" threads... ");
-	printf_s("%s", text.c_str());
-}
-
-
 void Base::doAnalise() {
 	int max = MAX_CPU_COUNT;
 	int iter = APROXIME;
@@ -154,20 +119,17 @@ void Base::doAnalise() {
 	unsigned long* WriteTimes = (unsigned long*)malloc(sizeof(unsigned long) * max * 10);
 	unsigned long* ReadTimes = (unsigned long*)malloc(sizeof(long) * max * 10);
 
-	for (int i = tStart; i <= tEnd; i += tStep) {
-		omp_set_num_threads(i + 1);
+	for (int n = minN; n <= maxN; n += step) {
 
-		for (int n = minN; n <= maxN; n += step) {
-			mass = (float*)malloc(sizeof(float)*n);
-			if (i == tStart) {
-				singleMass = (float*)malloc(sizeof(float)*n);
-				//long currentRunTime = doSingle(n);
-			}
+		for (int i = tStart; i <= tEnd; i += tStep) {
+			omp_set_num_threads(i + 1);
+			workMass = (float*)malloc(sizeof(float)*n);
+			if (i == tStart) resultS = (float*)malloc(sizeof(float)*n);
 			long currentReadTime = readData(n, true);
 			long currentRunTime = wrapAlgo(i, n);
-			long currentWriteTime = writeData(n, true) / 1000;
+			long currentWriteTime = writeData(n, true, (i != tStart)) / 1000;
 
-			if (!isTheSame()) {
+			if (i != tStart && !isTheSame()) {
 				cout << "Results was difrent!";
 				_getch();
 				exit(4);
@@ -181,7 +143,7 @@ void Base::doAnalise() {
 			ReadTimes[row * 10 + col] = currentReadTime;
 
 			cout << "=========================\n\n";
-			free(mass);
+			free(workMass);
 		}
 		cout << "\n";
 	}
@@ -189,6 +151,12 @@ void Base::doAnalise() {
 	saveResults(RunTimes, ReadTimes, WriteTimes);
 	system("result.csv");
 }
+bool Base::isTheSame() {
+	for (int i = 0; i < resultSize; i++) {
+		if (resultP[i] != resultS[i]) return false;
+	}
+}
+
 void Base::showResults(unsigned long* run, unsigned long* read, unsigned long* write) {
 	int max = MAX_CPU_COUNT;
 	cout << "\n\n==  RUN TIMES  =======================\n";
@@ -272,10 +240,16 @@ void Base::saveResults(unsigned long* res, unsigned long* write, unsigned long* 
 	}
 }
 
-bool Base::isTheSame() {
-	for (int i = 0; i < singleSize; i++) {
-		if (mass[i] != singleMass[i]) return false;
-	}
+
+void Base::printExName(int cpuCount, int n) {
+	string text = "Started parralel Matrix[";
+	text.append(to_string(n));
+	text.append("] ");
+	text.append(ExName);
+	text.append("with ");
+	text.append(to_string(cpuCount + 1));
+	text.append(" threads... ");
+	printf_s("%s", text.c_str());
 }
 
 Base::~Base()

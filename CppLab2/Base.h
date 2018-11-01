@@ -10,7 +10,7 @@
 #define MIN_N 10000;
 #define MAX_N 100000;
 #define STEP_N 10000;
-#define APROXIME 1; 
+#define APROXIME 100 ; 
 
 #define THR_START 0;
 #define THR_END 3 ;
@@ -24,14 +24,15 @@ public:
 	Base();
 	~Base();
 
-	float* mass;
-	unsigned long* results;
 	char* ExName;
 
-	int singleSize = 0;
-	float* singleMass;
+	float* workMass;
 
+	int resultSize = 0;
+	float* resultP;
+	float* resultS;
 
+	
 	virtual unsigned long doParralel(int cpuCount, int n);
 	virtual unsigned long doSingle(int n);
 
@@ -41,7 +42,7 @@ public:
 
 	unsigned long readData(int n, byte toLog);
 	unsigned long createData(int n, byte toLog);
-	virtual unsigned long writeData(int n, byte toLog);
+	virtual unsigned long writeData(int n, byte toLog, byte isParralel);
 
 	void doAnalise();
 	void saveResults(unsigned long * res, unsigned long* write, unsigned long* read);
