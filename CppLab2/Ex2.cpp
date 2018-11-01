@@ -14,7 +14,6 @@ unsigned long Ex2::writeData(int n, byte toLog, byte isParralel) {
 
 unsigned long Ex2::doParralel(int cpuCount, int n) {
 	int z, i;
-	int iterCount = log2l(n)+1;
 
 	float* mass = (float*)malloc(sizeof(float)*n);
 	for (int i = 0; i < n; i++) {
@@ -23,15 +22,11 @@ unsigned long Ex2::doParralel(int cpuCount, int n) {
 
 	auto start = chrono::high_resolution_clock::now();
 
-	int chunk = iterCount / cpuCount / 2;
-
-#pragma omp parallel for schedule(runtime) private(i, z) num_threads(cpuCount)
-	for (i = 1; i <= iterCount; i++)
+	for (int step = 1; step < n; step *= 2)
 	{
-		int shag = pow(2, i - 1);
-		for (z = shag; z < n; z += 2 * shag)
-#pragma omp atomic
-			mass[z - shag] += mass[z];
+#pragma omp parallel for schedule(static, n/step) private(i, z) num_threads(cpuCount)
+		for (z = step; z < n; z += 2 * step)
+			mass[z - step] += mass[z];
 	}
 	
 	auto finish = chrono::high_resolution_clock::now();
@@ -40,7 +35,7 @@ unsigned long Ex2::doParralel(int cpuCount, int n) {
 	free(resultP);
 	resultP = (float*)malloc(sizeof(float) * 1);
 	resultP[0] = mass[0];
-	cout << "s = " << resultP[0] << "\n";
+	//cout << "s = " << resultP[0] << "\n";
 	free(mass);
 
 	return duration;
@@ -68,7 +63,7 @@ unsigned long Ex2::doSingle(int n)
 	free(resultS);
 	resultS = (float*)malloc(sizeof(float) * 1);
 	resultS[0] = mass[0];
-	cout << "s = " << resultS[0] << "\n";
+	//cout << "s = " << resultS[0] << "\n";
 	free(mass);
 	return duration;
 }
