@@ -7,10 +7,10 @@
 #include <iostream>
 
 #define MAX_CPU_COUNT 64;
-#define MIN_N 1000;
-#define MAX_N 10000;
-#define STEP_N 1000;
-#define APROXIME 100 ; 
+#define MIN_N 10000;
+#define MAX_N 100000;
+#define STEP_N 10000;
+#define APROXIME 1000 ; 
 
 #define THR_START 0;
 #define THR_END 3 ;

@@ -154,6 +154,8 @@
     <ClInclude Include="Ex1.h" />
     <ClInclude Include="Ex2.h" />
     <ClInclude Include="Ex3.h" />
+    <ClInclude Include="Ex4.h" />
+    <ClInclude Include="Ex5.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -163,6 +165,8 @@
     <ClCompile Include="Ex1.cpp" />
     <ClCompile Include="Ex2.cpp" />
     <ClCompile Include="Ex3.cpp" />
+    <ClCompile Include="Ex4.cpp" />
+    <ClCompile Include="Ex5.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

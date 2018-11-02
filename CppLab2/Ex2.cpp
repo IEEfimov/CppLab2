@@ -5,7 +5,7 @@ using namespace std;
 
 Ex2::Ex2()
 {
-	ExName = (char *) " multiple";
+	ExName = (char *) "recurcive summ ";
 }
 
 unsigned long Ex2::writeData(int n, byte toLog, byte isParralel) {
@@ -17,9 +17,7 @@ unsigned long Ex2::doParralel(int cpuCount, int n) {
 	cpuCount += 1;
 
 	float* mass = (float*)malloc(sizeof(float)*n);
-	for (int i = 0; i < n; i++) {
-		mass[i] = workMass[i];
-	}
+	memcpy(mass, workMass, sizeof(float)*n);
 
 	auto start = chrono::high_resolution_clock::now();
 
