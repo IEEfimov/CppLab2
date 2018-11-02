@@ -155,6 +155,7 @@ bool Base::isTheSame() {
 	for (int i = 0; i < resultSize; i++) {
 		if (resultP[i] != resultS[i]) return false;
 	}
+	return true;
 }
 
 void Base::showResults(unsigned long* run, unsigned long* read, unsigned long* write) {

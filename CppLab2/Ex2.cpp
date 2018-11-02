@@ -14,6 +14,7 @@ unsigned long Ex2::writeData(int n, byte toLog, byte isParralel) {
 
 unsigned long Ex2::doParralel(int cpuCount, int n) {
 	int z, i;
+	cpuCount += 1;
 
 	float* mass = (float*)malloc(sizeof(float)*n);
 	for (int i = 0; i < n; i++) {
@@ -24,7 +25,7 @@ unsigned long Ex2::doParralel(int cpuCount, int n) {
 
 	for (int step = 1; step < n; step *= 2)
 	{
-#pragma omp parallel for schedule(static, n/step) private(i, z) num_threads(cpuCount)
+#pragma omp parallel for schedule(runtime) private(i, z) num_threads(cpuCount)
 		for (z = step; z < n; z += 2 * step)
 			mass[z - step] += mass[z];
 	}
