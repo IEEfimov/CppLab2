@@ -10,7 +10,7 @@
 #define MIN_N 1000;
 #define MAX_N 10000;
 #define STEP_N 1000;
-#define APROXIME 10 ; 
+#define APROXIME 100 ; 
 
 #define THR_START 0;
 #define THR_END 3 ;

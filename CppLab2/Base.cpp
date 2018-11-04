@@ -130,9 +130,8 @@ void Base::doAnalise() {
 			long currentWriteTime = writeData(n, true, (i != tStart)) / 1000;
 
 			if (i != tStart && !isTheSame()) {
-				cout << "Results was difrent!";
-				_getch();
-				exit(4);
+				cout << "Results were diffrent!";
+				currentRunTime = 0;
 			}
 
 			int row = i;
@@ -153,8 +152,8 @@ void Base::doAnalise() {
 }
 bool Base::isTheSame() {
 	for (int i = 0; i < resultSize; i++) {
-		//if (resultP[i] != resultS[i]) return false;
-		if (resultP[i] != resultS[i]) cout << "Results were diffrent! \n";
+		if (resultP[i] != resultS[i]) return false;
+		//if (resultP[i] != resultS[i]) cout << "Results were diffrent! \n";
 	}
 	return true;
 }
