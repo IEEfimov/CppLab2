@@ -153,7 +153,8 @@ void Base::doAnalise() {
 }
 bool Base::isTheSame() {
 	for (int i = 0; i < resultSize; i++) {
-		if (resultP[i] != resultS[i]) return false;
+		//if (resultP[i] != resultS[i]) return false;
+		if (resultP[i] != resultS[i]) cout << "Results were diffrent! \n";
 	}
 	return true;
 }

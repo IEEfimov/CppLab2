@@ -88,8 +88,6 @@ unsigned long Ex5::doSingle(int n)
 }
 
 
-
-
 Ex5::~Ex5()
 {
 }
